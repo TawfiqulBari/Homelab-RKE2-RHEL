@@ -141,14 +141,14 @@ cat<<EOF|tee /etc/rancher/rke2/config.yaml
 server: https://10.192.168.67:9345
 token: [token from /var/lib/rancher/rke2/server/node-token on server node 1]
 write-kubeconfig-mode: "0644" tls-san:
-  - devops67.ef.com
-  - 10.192.168.67
-  - devops61.ef.com
-  - 10.192.168.61
-  - devops62.ef.com
-  - 10.192.168.62
-  - devops63.ef.com
-  - 10.192.168.63
+  - homelab.tawfiqulbari.work
+  - 192.168.0.40
+  - rke2-control-1.tawfiqulbari.work
+  - 192.168.0.41
+  - rke2-control-2.tawfiqulbari.work
+  - 192.168.0.42
+  - rke2-control-3.tawfiqulbari.work
+  - 192.168.0.43
 write-kubeconfig-mode: "0644"
 etcd-expose-metrics: true
 cni:
