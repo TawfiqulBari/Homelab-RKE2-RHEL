@@ -127,3 +127,56 @@ kubectl rollout status daemonset   kube-vip-ds    -n kube-system   --timeout=650
 ```
 kubectl  get ds -n kube-system  kube-vip-ds
 ```
+Step 5: Remaining Control-Plane Nodes
+Perform these steps on remaining control-plane nodes.
+
+1. Create required directories for RKE2 configurations.
+```
+mkdir -p /etc/rancher/rke2/
+mkdir -p  /var/lib/rancher/rke2/server/manifests/
+```
+2. Create a deployment manifest called config.yaml  for RKE2 Cluster  and replace the IP addresses and corresponding FQDNS according (add any other fields from the Extra Options sections in config.yaml  at this point).
+```
+cat<<EOF|tee /etc/rancher/rke2/config.yaml
+server: https://10.192.168.67:9345
+token: [token from /var/lib/rancher/rke2/server/node-token on server node 1]
+write-kubeconfig-mode: "0644" tls-san:
+  - devops67.ef.com
+  - 10.192.168.67
+  - devops61.ef.com
+  - 10.192.168.61
+  - devops62.ef.com
+  - 10.192.168.62
+  - devops63.ef.com
+  - 10.192.168.63
+write-kubeconfig-mode: "0644"
+etcd-expose-metrics: true
+cni:
+  - canal
+
+EOF
+```
+Step 6: Begin the RKE2 Deployment
+1. Begin the RKE2 Deployment
+```
+curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE=server sh -
+```
+2. Start the RKE2 service. Starting the Service will take approx. 10-15 minutes based on the network connection
+```
+systemctl start rke2-server
+```
+Enable the RKE2 Service
+```
+systemctl enable rke2-server
+```
+4. By default, RKE2 deploys all the binaries in /var/lib/rancher/rke2/bin  path. Add this path to system's default PATH for kubectl utility to work appropriately.
+```
+export PATH=$PATH:/var/lib/rancher/rke2/bin
+export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
+```
+5. Also, append these lines into current user's .bashrc  file
+```
+echo "export PATH=$PATH:/var/lib/rancher/rke2/bin" >> $HOME/.bashrc
+echo "export KUBECONFIG=/etc/rancher/rke2/rke2.yaml"  >> $HOME/.bashrc
+```
+
