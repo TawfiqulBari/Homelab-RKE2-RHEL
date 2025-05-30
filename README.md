@@ -101,8 +101,8 @@ cat /var/lib/rancher/rke2/server/node-token
 Step 4: Deploy Kube-VIP
 1. Decide the IP and the interface on all nodes for Kube-VIP and setup these as environment variables. This step must be completed before deploying any other node in the cluster (both CP and Workers).
 ```
-export VIP=10.192.168.67
-export INTERFACE=enp1s0
+export VIP=192.168.0.40
+export INTERFACE=ens18
 ```
 2. Import the RBAC manifest for Kube-VIP
 ```
