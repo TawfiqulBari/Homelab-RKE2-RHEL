@@ -98,3 +98,32 @@ Get the token for joining other Control-Plane Nodes.
 ```
 cat /var/lib/rancher/rke2/server/node-token
 ```
+Step 4: Deploy Kube-VIP
+1. Decide the IP and the interface on all nodes for Kube-VIP and setup these as environment variables. This step must be completed before deploying any other node in the cluster (both CP and Workers).
+```
+export VIP=10.192.168.67
+export INTERFACE=enp1s0
+```
+2. Import the RBAC manifest for Kube-VIP
+```
+curl https://kube-vip.io/manifests/rbac.yaml > /var/lib/rancher/rke2/server/manifests/kube-vip-rbac.yaml
+```
+3. Fetch the kube-vip image
+```
+/var/lib/rancher/rke2/bin/crictl -r "unix:///run/k3s/containerd/containerd.sock"  pull ghcr.io/kube-vip/kube-vip:latest
+```
+4. Deploy the Kube-VIP
+```
+CONTAINERD_ADDRESS=/run/k3s/containerd/containerd.sock  ctr -n k8s.io run \
+--rm \
+--net-host \
+ghcr.io/kube-vip/kube-vip:latest vip /kube-vip manifest daemonset --arp --interface $INTERFACE --address $VIP --controlplane  --leaderElection --taint --services --inCluster | tee /var/lib/rancher/rke2/server/manifests/kube-vip.yaml
+```
+5. Wait for the kube-vip to complete bootstrapping
+```
+kubectl rollout status daemonset   kube-vip-ds    -n kube-system   --timeout=650s
+```
+6. Once the condition is met, you can check the daemonset by kube-vip is running 1 pod
+```
+kubectl  get ds -n kube-system  kube-vip-ds
+```
