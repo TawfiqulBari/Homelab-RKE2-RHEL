@@ -138,7 +138,7 @@ mkdir -p  /var/lib/rancher/rke2/server/manifests/
 2. Create a deployment manifest called config.yaml  for RKE2 Cluster  and replace the IP addresses and corresponding FQDNS according (add any other fields from the Extra Options sections in config.yaml  at this point).
 ```
 cat<<EOF|tee /etc/rancher/rke2/config.yaml
-server: https://10.192.168.67:9345
+server: https://192.168.0.40:9345
 token: [token from /var/lib/rancher/rke2/server/node-token on server node 1]
 write-kubeconfig-mode: "0644" tls-san:
   - homelab.tawfiqulbari.work
