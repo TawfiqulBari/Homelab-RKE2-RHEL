@@ -179,4 +179,31 @@ export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
 echo "export PATH=$PATH:/var/lib/rancher/rke2/bin" >> $HOME/.bashrc
 echo "export KUBECONFIG=/etc/rancher/rke2/rke2.yaml"  >> $HOME/.bashrc
 ```
+Step 7: Deploy Worker Nodes
+1. Create the RKE2 directory
+```
+mkdir -p /etc/rancher/rke2/
+```
+2. Create the config.yaml
+```
+cat<<EOF|tee /etc/rancher/rke2/config.yaml
+server: https://192.168.0.40:9345
+token: K10f2ed34144e349ea57cfef6cad0cd39b487e4e145240b19f2552382d4aef18e99::server:3f29dcf4c67c45c33723527a268da985
+write-kubeconfig-mode: \"0644\"
+
+EOF
+```
+3. Initiate the deployment of RKE2
+```
+curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE=agent sh -
+```
+4. Start the RKE2 Agent Service
+```
+systemctl start rke2-agent.service
+```
+5. Enable the RKE2 Agent Service to start at the boot time
+```
+systemctl enable  rke2-agent.service
+```
+
 
