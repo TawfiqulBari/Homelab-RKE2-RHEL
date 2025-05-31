@@ -205,5 +205,18 @@ systemctl start rke2-agent.service
 ```
 systemctl enable  rke2-agent.service
 ```
-
+Step 8: Install Helm
+1. Helm is a nifty tool to deploy external components. To install helm on cluster, execute the following command.
+```
+curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3|bash
+```
+2. Export HELM in PATH
+```
+export PATH=$PATH:/usr/local/bin/helm
+echo "export PATH=$PATH:/usr/local/bin/helm" >> $HOME/.bashrc
+```
+3. Enable bash completion for Helm
+```
+helm completion bash > /etc/bash_completion.d/helm
+```
 
